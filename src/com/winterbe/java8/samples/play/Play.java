@@ -1,11 +1,12 @@
 package com.winterbe.java8.samples.play;
 
 import java.util.Objects;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 public class Play {
-
 
     public static void main(String[] args) {
         /**
@@ -26,13 +27,38 @@ public class Play {
          */
         times2.andThen(squared).apply(4);
 
+        /**
+         *@Desc Predicate接受一个参数 判断输入的对象是否符合某个条件,返回一个布尔值
+         *      5个方法,and|negate|or|test|xor
+         *@return BiPredicate | Predicate<T></>
+         */
         Predicate<String> nonNull = Objects::nonNull;
-        Predicate<String> isNull = Objects::isNull;
-
         System.out.println(nonNull.test("asdfas"));
 
 
+        Supplier<User> userSupplier = User::new;
+        User user = userSupplier.get();
+        Consumer<User> userConsumer = (u) -> System.out.println("Username: "
+                + u.getUserName());
+        userConsumer.accept(user);
+
         Function<String,String> function = (x) -> {System.out.print(x+": ");return "Function";};
         System.out.println(function.apply("hello world"));
+    }
+
+    static class User{
+        private String userName;
+
+        public String getUserName() {
+            return userName;
+        }
+
+        public void setUserName(String userName) {
+            this.userName = userName;
+        }
+
+        public User() {
+            this.userName = "Just Test";
+        }
     }
 }
