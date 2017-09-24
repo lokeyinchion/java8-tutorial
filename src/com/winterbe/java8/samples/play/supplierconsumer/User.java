@@ -1,4 +1,4 @@
-package com.winterbe.java8.samples.play.SupplierConsumer;/**
+package com.winterbe.java8.samples.play.supplierconsumer;/**
  * Project: java8-tutorial
  * <p>
  * File Created at 2017/9/22

@@ -1,4 +1,4 @@
-package com.winterbe.java8.samples.play.SupplierConsumer;/**
+package com.winterbe.java8.samples.play.supplierconsumer;/**
  * Project: java8-tutorial
  * <p>
  * File Created at 2017/9/22
@@ -36,7 +36,9 @@ public class App {
             }
         };
 
-        Consumer<User> userConsumer = user -> System.out.println("Processing user " + user.getUserId());
+        Consumer<User> userConsumer = user -> {
+            System.out.println(Thread.currentThread().getName());
+            System.out.println("Processing user " + user.getUserId());};
 
         new SupplierConsumer<>(userSupplier, userConsumer).start();
 
