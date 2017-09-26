@@ -4,9 +4,17 @@ package com.winterbe.java8.samples.lambda;
  * @author Benjamin Winterberg
  */
 public class Lambda2 {
-
+    /**
+     * @desc FunctionalInterface函数式接口注解
+     *****************************************
+     * 1.有且仅有一个抽象方法
+     * 2.静态static,默认方法default,或继承覆盖Object的方法,都不是抽象方法
+     *****************************************
+     * @param <F>
+     * @param <T>
+     */
     @FunctionalInterface
-    public static interface Converter<F, T> {
+    public interface Converter<F, T> {
         T convert(F from);
     }
 

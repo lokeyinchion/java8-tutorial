@@ -2,9 +2,13 @@ package com.winterbe.java8.samples.time;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.Month;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.FormatStyle;
+import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
 import java.util.Locale;
 
@@ -33,6 +37,7 @@ public class LocalDate1 {
 
         LocalDate xmas = LocalDate.parse("24.12.2014", germanFormatter);
         System.out.println(xmas);   // 2014-12-24
+
 
 
     }

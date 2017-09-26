@@ -36,6 +36,9 @@ public class App {
             }
         };
 
+        /**
+         * BiConsumer<T,U>   (T,U)->void
+         */
         Consumer<User> userConsumer = user -> {
             System.out.println(Thread.currentThread().getName());
             System.out.println("Processing user " + user.getUserId());};

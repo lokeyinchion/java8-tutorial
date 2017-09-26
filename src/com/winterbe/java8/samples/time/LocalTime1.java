@@ -1,21 +1,27 @@
 package com.winterbe.java8.samples.time;
 
 import java.time.Clock;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalTime;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Set;
+import java.util.function.Predicate;
+
+import static java.time.Instant.now;
 
 /**
  * @author Benjamin Winterberg
  */
 public class LocalTime1 {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
 
         // get the current time
         Clock clock = Clock.systemDefaultZone();
@@ -31,6 +37,21 @@ public class LocalTime1 {
 
         System.out.println(zone1.getRules());
         System.out.println(zone2.getRules());
+
+        //TimeZones
+        DateTimeFormatter dtf = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT);
+        ZonedDateTime gmt = ZonedDateTime.now(ZoneId.of("GMT+0"));
+        System.out.println(dtf.format(gmt));
+
+        ZonedDateTime ny = ZonedDateTime.now(ZoneId.of("America/New_York"));
+        System.out.println(dtf.format(ny));
+
+        Set<String> zones = ZoneId.getAvailableZoneIds();
+        Predicate<String> condition = str -> str.contains("London");
+        zones.forEach(z -> {
+            if(condition.test(z))
+                System.out.println(z);
+        });
 
         // time
         LocalTime now1 = LocalTime.now(zone1);
@@ -55,14 +76,10 @@ public class LocalTime1 {
         LocalTime late = LocalTime.of(23, 59, 59);
         System.out.println(late);
 
-        DateTimeFormatter germanFormatter =
-                DateTimeFormatter
-                        .ofLocalizedTime(FormatStyle.SHORT)
-                        .withLocale(Locale.GERMAN);
+        DateTimeFormatter germanFormatter =DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT).withLocale(Locale.GERMAN);
 
         LocalTime leetTime = LocalTime.parse("13:37", germanFormatter);
         System.out.println(leetTime);
-
 
         // to legacy date
 

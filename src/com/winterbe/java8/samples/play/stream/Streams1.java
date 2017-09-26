@@ -2,13 +2,13 @@ package com.winterbe.java8.samples.play.stream;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.stream.IntStream;
 
 /**
  * @Desc 性能上Stream里有个操作函数的集合,每次转换操作就是把转换函数放入这个集合中,
  * 在汇聚操作的时候循环Stream对应的集合,然后对每个元素执行所有的函数.
+ * @Detination 帮助管理数据集合而设计
  * @author Benjamin Winterberg
  */
 public class Streams1 {
@@ -27,13 +27,16 @@ public class Streams1 {
 
 
         /**
-         * stream()从iterator---创建stream
-         * 可通过静态方法Stream<Integer> integerStream = Stream.of(1, 2, 3, 5);
-         * 也可通过Collection接口的默认方法stream()
+         * stream()从iterator---创建stream,原有的集合类map,array,list等都可考虑使用新
+         * 方式进行遍历
+         * 1.可通过静态方法Stream<Integer> integerStream = Stream.of(1, 2, 3, 5);
+         *
+         * 2.也可通过Collection接口的默认方法stream()
          * parallelStream()多线程环境中可能有问题
          *
          * distinct()|filter()|sorted()|map()---转换stream
          * limit()|skip()
+         * anyMatch()|allMatch()|noneMatch()
          *
          * count()|reduce()|sum()|max()|collect()---聚合操作
          */
@@ -43,71 +46,6 @@ public class Streams1 {
                 .forEach(System.out::println);
 
         // "aaa2", "aaa1"
-
-
-        // sorting
-
-        stringCollection
-                .stream()
-                .sorted()
-                .filter((s) -> s.startsWith("a"))
-                .forEach(System.out::println);
-
-        // "aaa1", "aaa2"
-
-
-        // mapping
-
-        stringCollection
-                .stream()
-                .map(String::toUpperCase)
-                .sorted((a, b) -> b.compareTo(a))
-                .forEach(System.out::println);
-
-        // "DDD2", "DDD1", "CCC", "BBB3", "BBB2", "AAA2", "AAA1"
-
-
-        // matching
-
-        boolean anyStartsWithA = stringCollection
-                .stream()
-                .anyMatch((s) -> s.startsWith("a"));
-
-        System.out.println(anyStartsWithA);      // true
-
-        boolean allStartsWithA = stringCollection
-                .stream()
-                .allMatch((s) -> s.startsWith("a"));
-
-        System.out.println(allStartsWithA);      // false
-
-        boolean noneStartsWithZ = stringCollection
-                .stream()
-                .noneMatch((s) -> s.startsWith("z"));
-
-        System.out.println(noneStartsWithZ);      // true
-
-
-        // counting
-
-        long startsWithB = stringCollection
-                .stream()
-                .filter((s) -> s.startsWith("b"))
-                .count();
-
-        System.out.println(startsWithB);    // 3
-
-
-        // reducing
-
-        Optional<String> reduced =
-                stringCollection
-                        .stream()
-                        .sorted()
-                        .reduce((s1, s2) -> s1 + "#" + s2);
-
-        reduced.ifPresent(System.out::println);
-        // "aaa1#aaa2#bbb1#bbb2#bbb3#ccc#ddd1#ddd2"
 
         /**
          * Reduce方法接受一个函数,这个函数有两个参数.
@@ -124,7 +62,59 @@ public class Streams1 {
         int reduced2 =IntStream.range(0, 10).reduce(7, (a, b) -> a + b);
         System.out.println(reduced2);
 
+        test5(stringCollection);
+    }
 
+    /**
+     * @desc 可以预先定义,也可以临时定义filter/sorted等函数的实现
+     * @param stringCollection
+     */
+    private static void test5(List<String> stringCollection) {
+        stringCollection
+                .stream()
+                .filter(s -> {
+                    System.out.println("filter:  " + s);
+                    return s.toLowerCase().startsWith("a");
+                })
+                .sorted((s1, s2) -> {
+                    System.out.printf("sort:    %s; %s\n", s1, s2);
+                    return s1.compareTo(s2);
+                })
+                .map(s -> {
+                    System.out.println("map:     " + s);
+                    return s.toUpperCase();
+                })
+                .forEach(s -> System.out.println("forEach: " + s));
+    }
+
+    /**
+     * @desc peek()-->生成一个包含原Stream的所有元素的新Stream,同时会提供一个消费函数(Consumer实例),
+     * 新Stream每个元素被消费的时候都会执行给定的消费函数
+     */
+    static void test2() {
+        IntStream.range(1, 4)
+                .mapToObj(num -> new Foo("Foo" + num))
+                .peek(f -> IntStream.range(1, 4)
+                        .mapToObj(num -> new Bar("Bar" + num + " <- " + f.name))
+                        .forEach(f.bars::add))
+                .flatMap(f -> f.bars.stream())
+                .forEach(b -> System.out.println(b.name));
+    }
+    static class Foo {
+        String name;
+        List<Bar> bars = new ArrayList<>();
+
+        Foo(String name) {
+            this.name = name;
+        }
+    }
+
+    static class Bar {
+        String name;
+
+        Bar(String name) {
+            this.name = name;
+        }
     }
 
 }
